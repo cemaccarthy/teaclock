@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23F4EFE3'/%3E%3Ccircle cx='40' cy='38' r='16' fill='%23D7263D'/%3E%3Crect x='108' y='24' width='26' height='26' fill='%23FFD100' transform='rotate(45 121 37)'/%3E%3Cpolygon points='90,120 60,160 120,160' fill='%231B4F9C'/%3E%3Cellipse cx='90' cy='150' rx='54' ry='8' fill='%23E9E1CC' stroke='%231A1A1A' stroke-width='3'/%3E%3C/svg%3E">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Decimal Tea">
+<title>Decimal Tea</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap');
+
+:root {
+  --bg: #F4EFE3;
+  --bg2: #FFFFFF;
+  --bg3: #E9E1CC;
+  --ink: #1A1A1A;
+
+  --red: #D7263D;
+  --red-dim: #A11B2C;
+  --red-tint: #F6D3D8;
+  --red-tint2: #EFBEC5;
+
+  --yellow: #FFD100;
+  --yellow-dim: #D1A800;
+  --yellow-tint: #FFF0AD;
+
+  --blue: #1B4F9C;
+  --blue-dim: #123A73;
+  --blue-tint: #DAE4F3;
+  --blue-tint2: #C0D1EA;
+
+  --green: #5C7A42;
+  --green-dim: #435A2F;
+  --green-tint: #DCE6D0;
+  --green-tint2: #C7D6B8;
+
+  --fg: var(--red);
+  --text-dark: #1A1A1A;
+  --border: #1A1A1A;
+
+  --tea-white: #B8A46B;
+  --tea-green: #5C7A42;
+  --tea-oolong: #C97A25;
+  --tea-black: #6B3A1E;
+  --tea-puerh: #4A2712;
+  --tea-herbal: #B5566F;
+}
+
+* {
+  margin:0; padding:0; box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-dark);
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.2rem 1.2rem 5rem;
+  overscroll-behavior: none;
+}
+
+/* Bold Bauhaus geometric backdrop */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    radial-gradient(circle at 90% 4%, var(--red) 0 46px, transparent 47px),
+    radial-gradient(circle at 90% 4%, transparent 0 60px, var(--yellow) 61px, transparent 100px),
+    linear-gradient(135deg, var(--blue) 0 100%);
+  background-position: 0 0, 0 0, -12% 96%;
+  background-size: 100% 100%, 100% 100%, 220px 220px;
+  background-repeat: no-repeat;
+  opacity: 0.13;
+  pointer-events:none; z-index:0;
+}
+
+/* ── HEADER ── */
+.header { text-align: center; margin-bottom: 1.4rem; z-index: 1; }
+.label-top {
+  font-weight: 800; letter-spacing: 0.3em; font-size: 1.5rem;
+  color: var(--ink); text-transform: uppercase; margin-bottom: 0.3rem;
+}
+.label-sub {
+  font-size: 0.6rem; letter-spacing: 0.3em; color: rgba(26,26,26,0.42);
+  text-transform: uppercase;
+}
+.bauhaus-mark {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.5rem; margin-top: 0.7rem;
+}
+.mark-circle { width: 16px; height: 16px; border-radius: 50%; background: var(--red); }
+.mark-square { width: 14px; height: 14px; background: var(--yellow); transform: rotate(45deg); }
+.mark-triangle {
+  width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent;
+  border-bottom: 16px solid var(--blue);
+}
+
+.app-wrap {
+  z-index: 1; width: 100%; max-width: 380px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 1.1rem;
+}
+.app-wrap.hidden { display: none; }
+
+.card {
+  position: relative;
+  width: 100%; background: var(--bg2); border: 3px solid var(--border);
+  padding: 1.15rem 1.2rem 1.2rem; box-shadow: 4px 4px 0 var(--ink);
+}
+.card::before {
+  content: ''; position: absolute; top: -3px; left: -3px; right: -3px; height: 6px;
+  background: var(--accent, var(--red));
+}
+.card.hidden { display: none; }
+.card-accent-yellow { --accent: var(--yellow); }
+.card-accent-blue { --accent: var(--blue); }
+.card-accent-red { --accent: var(--red); }
+
+.section-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+  font-weight: 800; color: var(--ink); margin-bottom: 0.8rem;
+}
+.section-title::before {
+  content: ''; width: 10px; height: 10px; background: var(--accent, var(--red)); flex-shrink: 0;
+}
+
+/* ── PRESET TOGGLE ── */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+}
+.toggle-label {
+  font-weight: 700; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink);
+}
+.switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--bg3); border: 2px solid var(--ink); transition: 0.2s;
+}
+.switch .slider::before {
+  position: absolute; content: ''; height: 16px; width: 16px; left: 3px; bottom: 3px;
+  background-color: var(--ink); transition: 0.2s;
+}
+.switch input:checked + .slider { background-color: var(--red); border-color: var(--red); }
+.switch input:checked + .slider::before { background-color: #fff; transform: translateX(20px); }
+
+/* ── TEA TYPE GRID ── */
+.tea-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.45rem; }
+.tea-btn {
+  font-family: 'Poppins', sans-serif; font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; padding: 0.65rem 0.2rem;
+  cursor: pointer; border: 3px solid var(--border); background: var(--bg2);
+  color: rgba(26,26,26,0.55); transition: all 0.15s; text-align: center;
+}
+.tea-btn.selected { color: #fff; box-shadow: 3px 3px 0 var(--ink); }
+.tea-note {
+  margin-top: 0.75rem; font-size: 0.62rem; letter-spacing: 0.03em;
+  line-height: 1.5; color: rgba(26,26,26,0.6); text-align: center;
+}
+
+/* ── DIAL ── */
+.dial-card { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.3rem 1rem; }
+.dial-wrap { position: relative; width: 230px; max-width: 100%; touch-action: none; }
+.dial-svg { width: 100%; height: auto; display: block; touch-action: none; }
+.dial-track { fill: none; stroke: var(--bg3); stroke-width: 16; stroke-linecap: butt; }
+.dial-progress { fill: none; stroke: var(--red); stroke-width: 16; stroke-linecap: butt; transition: stroke 0.2s; }
+.dial-handle { fill: var(--bg2); stroke: var(--ink); stroke-width: 3.5; cursor: grab; }
+.dial-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; pointer-events: none; gap: 0.15rem;
+}
+.dial-time { font-weight: 800; font-size: clamp(1.7rem, 9vw, 2.4rem); font-variant-numeric: tabular-nums; color: var(--ink); }
+.dial-label { font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(26,26,26,0.4); }
+
+.dial-fine-row { display: flex; gap: 0.5rem; width: 100%; }
+.btn-fine {
+  flex: 1; font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 800;
+  padding: 0.55rem 0; cursor: pointer; border: 3px solid var(--border); transition: all 0.15s;
+}
+.fine-red-dark { background: var(--red); border-color: var(--red); color: #fff; }
+.fine-red-dark:active { background: var(--red-dim); }
+.fine-red-light { background: var(--red-tint); border-color: var(--red); color: var(--red-dim); }
+.fine-red-light:active { background: var(--red-tint2); }
+.fine-green-light { background: var(--green-tint); border-color: var(--green); color: var(--green-dim); }
+.fine-green-light:active { background: var(--green-tint2); }
+.fine-green-dark { background: var(--green); border-color: var(--green); color: #fff; }
+.fine-green-dark:active { background: var(--green-dim); }
+
+/* ── ALARM OPTIONS ── */
+.alarm-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.alarm-btn {
+  font-family: 'Poppins', sans-serif; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; padding: 0.6rem 0.3rem;
+  cursor: pointer; border: 3px solid var(--border); background: transparent;
+  color: rgba(26,26,26,0.5); transition: all 0.15s; text-align: center;
+}
+.alarm-btn.selected { border-color: var(--red); color: #fff; background: var(--red); box-shadow: 3px 3px 0 var(--ink); }
+.alarm-note { margin-top: 0.65rem; font-size: 0.56rem; letter-spacing: 0.05em; color: rgba(26,26,26,0.45); text-align: center; }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 0.6rem; width: 100%; }
+.btn {
+  font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.13em; text-transform: uppercase; padding: 0.8rem 0;
+  cursor: pointer; border: 3px solid var(--border); background: var(--bg2);
+  color: var(--text-dark); transition: all 0.15s; flex: 1; text-align: center;
+}
+.btn:active { background: var(--bg3); }
+.btn.btn-primary { background: var(--red); color: #fff; border-color: var(--red); box-shadow: 4px 4px 0 var(--ink); }
+.btn.btn-primary:active { background: var(--red-dim); box-shadow: 1px 1px 0 var(--ink); }
+.btn.btn-danger-light { border-color: var(--red); color: var(--red-dim); background: var(--red-tint); }
+.btn.btn-danger-light:active { background: var(--red-tint2); }
+
+/* ── COUNTDOWN CARD (brewing view) ── */
+.cup-card { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; padding: 1.6rem 1rem; }
+.ring-wrap { width: 220px; max-width: 100%; position: relative; }
+.ring-svg { width: 100%; height: auto; display: block; }
+.cup-ring-track { fill: none; stroke: var(--bg3); stroke-width: 10; }
+.cup-ring-progress {
+  fill: none; stroke: var(--red); stroke-width: 10; stroke-linecap: butt;
+  transform-origin: 100px 100px; transform: rotate(-90deg);
+  transition: stroke-dashoffset 0.2s linear, stroke 0.3s;
+}
+.ring-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.3rem;
+}
+
+.timer-readout { font-weight: 800; font-size: clamp(2.1rem, 11vw, 3rem); font-variant-numeric: tabular-nums; color: var(--red-dim); line-height: 1; }
+
+/* ── ALARM OVERLAY ── */
+.alarm-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(244,239,227,0.97);
+  z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1.5rem; padding: 2rem;
+}
+.alarm-overlay.active { display: flex; }
+.alarm-msg {
+  font-weight: 800; font-size: 1.3rem; letter-spacing: 0.15em; color: var(--red);
+  text-align: center; animation: alarm-pulse 0.9s ease-in-out infinite;
+}
+@keyframes alarm-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+.alarm-sub { font-size: 0.65rem; letter-spacing: 0.22em; color: rgba(26,26,26,0.45); text-transform: uppercase; text-align: center; }
+.alarm-dismiss {
+  font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.78rem;
+  letter-spacing: 0.13em; text-transform: uppercase; padding: 0.8rem 3rem;
+  cursor: pointer; background: var(--red); color: #fff; border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="label-top">Decimal Tea</div>
+  <div class="label-sub">steep timer &middot; decimal time</div>
+  <div class="bauhaus-mark">
+    <span class="mark-circle"></span>
+    <span class="mark-square"></span>
+    <span class="mark-triangle"></span>
+  </div>
+</div>
+
+<!-- ══ SETUP VIEW ══ -->
+<div class="app-wrap" id="setup-panel">
+
+  <div class="card card-accent-red">
+    <div class="toggle-row">
+      <span class="toggle-label">Preset Steep Times</span>
+      <label class="switch">
+        <input type="checkbox" id="preset-toggle" onchange="togglePresets()">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="card card-accent-yellow hidden" id="tea-card">
+    <div class="section-title">Tea Type</div>
+    <div class="tea-grid" id="tea-grid">
+      <button class="tea-btn" onclick="selectTea('white',this)">White</button>
+      <button class="tea-btn" onclick="selectTea('green',this)">Green</button>
+      <button class="tea-btn" onclick="selectTea('oolong',this)">Oolong</button>
+      <button class="tea-btn" onclick="selectTea('black',this)">Black</button>
+      <button class="tea-btn" onclick="selectTea('puerh',this)">Pu-erh</button>
+      <button class="tea-btn" onclick="selectTea('herbal',this)">Herbal</button>
+    </div>
+    <div class="tea-note" id="tea-note">Pick a tea for a suggested steep time.</div>
+  </div>
+
+  <div class="card card-accent-blue dial-card">
+    <div class="dial-wrap">
+      <svg viewBox="0 0 260 260" id="dial-svg" class="dial-svg">
+        <path id="dial-track" class="dial-track"></path>
+        <path id="dial-progress" class="dial-progress"></path>
+        <circle id="dial-handle" class="dial-handle" r="13"></circle>
+      </svg>
+      <div class="dial-center">
+        <div class="dial-time" id="dial-time">1:40</div>
+        <div class="dial-label">min : sec (decimal)</div>
+      </div>
+    </div>
+    <div class="dial-fine-row">
+      <button class="btn-fine fine-red-dark" onclick="nudgeDial(-5)">&minus;5</button>
+      <button class="btn-fine fine-red-light" onclick="nudgeDial(-1)">&minus;1</button>
+      <button class="btn-fine fine-green-light" onclick="nudgeDial(1)">+1</button>
+      <button class="btn-fine fine-green-dark" onclick="nudgeDial(5)">+5</button>
+    </div>
+  </div>
+
+  <div class="card card-accent-red">
+    <div class="section-title">Alarm Sound</div>
+    <div class="alarm-options">
+      <button class="alarm-btn selected" onclick="selectAlarm(0,this)">Soft Chime</button>
+      <button class="alarm-btn" onclick="selectAlarm(1,this)">Temple Bell</button>
+      <button class="alarm-btn" onclick="selectAlarm(2,this)">Wind Chime</button>
+      <button class="alarm-btn" onclick="selectAlarm(3,this)">Harp Bloom</button>
+    </div>
+    <div class="alarm-note">A gentle kettle whistle plays just before each alarm.</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="startTimer()">Start Steeping</button>
+  </div>
+
+</div>
+
+<!-- ══ BREWING VIEW ══ -->
+<div class="app-wrap hidden" id="timer-panel">
+
+  <div class="card cup-card" id="cup-card">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 200 200" class="ring-svg">
+        <circle class="cup-ring-track" cx="100" cy="100" r="90"></circle>
+        <circle id="cup-ring-progress" class="cup-ring-progress" cx="100" cy="100" r="90"></circle>
+      </svg>
+      <div class="ring-center">
+        <div class="timer-readout" id="timer-readout">1:40</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="pause-btn" onclick="pauseResume()">Pause</button>
+    <button class="btn btn-danger-light" onclick="resetTimer()">Reset</button>
+  </div>
+
+</div>
+
+<!-- Silent looping audio track — keeps an active media session so the
+     browser is less likely to fully suspend the page's audio/timers
+     when the phone screen locks or the app is backgrounded. This is a
+     best-effort technique; iOS does not guarantee background execution
+     for web apps, so timing may drift or pause if the app is left for
+     a long time or fully closed from the app switcher. -->
+<audio id="keep-alive-audio" loop playsinline
+  src="data:audio/wav;base64,UklGRmQfAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YUAfAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA=="></audio>
+
+<!-- ══ ALARM OVERLAY ══ -->
+<div class="alarm-overlay" id="alarm-overlay">
+  <div class="alarm-msg">Tea's Ready</div>
+  <div class="alarm-sub">Your steep is complete</div>
+  <button class="alarm-dismiss" onclick="dismissAlarm()">Dismiss</button>
+</div>
+
+<script>
+document.addEventListener('selectstart', function (e) {
+  e.preventDefault();
+});
+document.addEventListener('contextmenu', function (e) {
+  e.preventDefault();
+});
+
+// ══════════════════════════════════════════════════════
+//  TEA PRESETS
+//  Standard steep ranges converted to decimal time
+//  (1 decimal minute = 100 decimal seconds = 1.44 standard
+//  minutes), rounded to the nearest ten decimal seconds.
+// ══════════════════════════════════════════════════════
+const TEA_PRESETS = {
+  white:  { name: 'White Tea',        min: 70,  max: 210, default: 140, color: '#B8A46B', endColor: '#E8CF8A', std: '1–3 min' },
+  green:  { name: 'Green Tea',        min: 70,  max: 210, default: 140, color: '#5C7A42', endColor: '#CBD98A', std: '1–3 min, don\u2019t exceed 3' },
+  oolong: { name: 'Oolong Tea',       min: 140, max: 210, default: 170, color: '#C97A25', endColor: '#D9A15C', std: '2–3 min' },
+  black:  { name: 'Black Tea',        min: 210, max: 350, default: 280, color: '#6B3A1E', endColor: '#6B3A1E', std: '3–5 min' },
+  puerh:  { name: 'Pu-erh Tea',       min: 140, max: 210, default: 170, color: '#4A2712', endColor: '#3E2415', std: '2–3 min' },
+  herbal: { name: 'Herbal / Tisane',  min: 350, max: 490, default: 420, color: '#B5566F', endColor: '#B0563C', std: '5–7 min' }
+};
+const MAX_DS = 600; // dial ceiling: 6:00 decimal (about 8.6 standard minutes)
+
+function formatDs(ds) {
+  const m = Math.floor(ds / 100);
+  const s = Math.floor(ds % 100);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+function dsRangeLabel(preset) {
+  return `${formatDs(preset.min)}\u2013${formatDs(preset.max)}`;
+}
+
+// ══════════════════════════════════════════════════════
+//  AUDIO ENGINE
+// ══════════════════════════════════════════════════════
+let selectedAlarm = 0;
+let audioCtx = null;
+let alarmSequenceTimeout = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+// ── Button click sound ──
+let clickNoiseBuffer = null;
+function getClickNoiseBuffer(ctx) {
+  if (!clickNoiseBuffer) {
+    const len = Math.floor(ctx.sampleRate * 0.03);
+    clickNoiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = clickNoiseBuffer.getChannelData(0);
+    for (let i = 0; i < len; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+    }
+  }
+  return clickNoiseBuffer;
+}
+function playButtonClickSound() {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = getClickNoiseBuffer(ctx);
+    const bandpass = ctx.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.setValueAtTime(2600, now);
+    bandpass.Q.value = 0.9;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.5, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.022);
+    noise.connect(bandpass).connect(noiseGain).connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.03);
+
+    const thock = ctx.createOscillator();
+    const thockGain = ctx.createGain();
+    thock.type = 'sine';
+    thock.frequency.setValueAtTime(180, now);
+    thock.frequency.exponentialRampToValueAtTime(90, now + 0.02);
+    thockGain.gain.setValueAtTime(0.18, now);
+    thockGain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+    thock.connect(thockGain).connect(ctx.destination);
+    thock.start(now);
+    thock.stop(now + 0.03);
+  } catch (e) {}
+}
+document.addEventListener('click', function (e) {
+  if (e.target.closest('button') && !e.target.closest('.alarm-btn')) playButtonClickSound();
+}, true);
+
+// ── Natural toggle-switch sound (mechanical rocker "clack") ──
+function playSwitchSound(isOn) {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+
+    // Sharp plastic-contact tick
+    const tickLen = Math.floor(ctx.sampleRate * 0.012);
+    const tickBuffer = ctx.createBuffer(1, tickLen, ctx.sampleRate);
+    const tickData = tickBuffer.getChannelData(0);
+    for (let i = 0; i < tickLen; i++) {
+      tickData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / tickLen, 2);
+    }
+    const tick = ctx.createBufferSource();
+    tick.buffer = tickBuffer;
+    const tickFilter = ctx.createBiquadFilter();
+    tickFilter.type = 'highpass';
+    tickFilter.frequency.value = 4500;
+    const tickGain = ctx.createGain();
+    tickGain.gain.setValueAtTime(0.35, now);
+    tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.014);
+    tick.connect(tickFilter).connect(tickGain).connect(ctx.destination);
+    tick.start(now);
+    tick.stop(now + 0.02);
+
+    // Resonant body "thonk" — pitch differs for on vs off, like a real rocker switch
+    const thonk = ctx.createOscillator();
+    const thonkGain = ctx.createGain();
+    thonk.type = 'triangle';
+    const startFreq = isOn ? 260 : 170;
+    const endFreq = isOn ? 150 : 100;
+    thonk.frequency.setValueAtTime(startFreq, now + 0.006);
+    thonk.frequency.exponentialRampToValueAtTime(endFreq, now + 0.05);
+    thonkGain.gain.setValueAtTime(0, now);
+    thonkGain.gain.setValueAtTime(0.22, now + 0.006);
+    thonkGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    thonk.connect(thonkGain).connect(ctx.destination);
+    thonk.start(now);
+    thonk.stop(now + 0.09);
+  } catch (e) {}
+}
+
+// ── Kettle whistle, played just before every alarm ──
+let kettleNoiseBuffer = null;
+function getKettleNoiseBuffer(ctx) {
+  if (!kettleNoiseBuffer) {
+    const len = Math.floor(ctx.sampleRate * 1.3);
+    kettleNoiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = kettleNoiseBuffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  }
+  return kettleNoiseBuffer;
+}
+function playKettleWhistle(ctx) {
+  const now = ctx.currentTime;
+  const duration = 1.1;
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = getKettleNoiseBuffer(ctx);
+  const noiseFilter = ctx.createBiquadFilter();
+  noiseFilter.type = 'highpass';
+  noiseFilter.frequency.value = 2200;
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0, now);
+  noiseGain.gain.linearRampToValueAtTime(0.05, now + 0.15);
+  noiseGain.gain.linearRampToValueAtTime(0.025, now + 0.8);
+  noiseGain.gain.linearRampToValueAtTime(0, now + duration);
+  noise.connect(noiseFilter).connect(noiseGain).connect(ctx.destination);
+  noise.start(now);
+  noise.stop(now + duration);
+
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1550, now);
+  osc.frequency.linearRampToValueAtTime(1900, now + 0.3);
+  osc.frequency.linearRampToValueAtTime(1750, now + duration);
+
+  const vibrato = ctx.createOscillator();
+  vibrato.frequency.value = 5.5;
+  const vibratoGain = ctx.createGain();
+  vibratoGain.gain.value = 12;
+  vibrato.connect(vibratoGain).connect(osc.frequency);
+
+  const oscGain = ctx.createGain();
+  oscGain.gain.setValueAtTime(0, now);
+  oscGain.gain.linearRampToValueAtTime(0.11, now + 0.2);
+  oscGain.gain.linearRampToValueAtTime(0.08, now + 0.8);
+  oscGain.gain.linearRampToValueAtTime(0.0001, now + duration);
+  osc.connect(oscGain).connect(ctx.destination);
+
+  vibrato.start(now); osc.start(now);
+  vibrato.stop(now + duration); osc.stop(now + duration);
+
+  return duration * 1000;
+}
+
+// ── Light, pleasant alarm tones ──
+function playSoftChime(ctx) {
+  const now = ctx.currentTime;
+  [523.25, 659.25, 783.99].forEach((f, i) => {
+    const t = now + i * 0.18;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(f, t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.22, t + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t); osc.stop(t + 1.7);
+  });
+  return 1900;
+}
+function playTempleBell(ctx) {
+  const now = ctx.currentTime;
+  [392, 588, 784].forEach((f, i) => {
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(f, now);
+    gain.gain.setValueAtTime(i === 0 ? 0.26 : 0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + (i === 0 ? 2.6 : 1.6));
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now); osc.stop(now + 2.8);
+  });
+  return 2900;
+}
+function playWindChime(ctx) {
+  const now = ctx.currentTime;
+  [987.77, 1174.66, 1318.51, 1567.98, 1760].forEach((f, i) => {
+    const t = now + i * 0.14 + Math.random() * 0.03;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(f, t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.15, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t); osc.stop(t + 1.2);
+  });
+  return 1500;
+}
+function playHarpBloom(ctx) {
+  const now = ctx.currentTime;
+  [261.63, 329.63, 392, 523.25].forEach((f, i) => {
+    const t = now + i * 0.11;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(f, t);
+    gain.gain.setValueAtTime(0.18, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.3);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t); osc.stop(t + 1.4);
+  });
+  return 1600;
+}
+const ALARM_TONES = [playSoftChime, playTempleBell, playWindChime, playHarpBloom];
+
+function selectAlarm(idx, btn) {
+  selectedAlarm = idx;
+  document.querySelectorAll('.alarm-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  previewAlarmSound(idx);
+}
+function previewAlarmSound(idx) {
+  // Preview just the tone — the kettle whistle is reserved for when the
+  // real alarm actually goes off, not for browsing sound options.
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    ALARM_TONES[idx](ctx);
+  } catch (e) {}
+}
+
+// Kettle whistle, then chosen tone, on repeat until dismissed.
+function playAlarmSequence() {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const kettleMs = playKettleWhistle(ctx);
+    alarmSequenceTimeout = setTimeout(() => {
+      const toneMs = ALARM_TONES[selectedAlarm](ctx);
+      fireLocalNotification();
+      alarmSequenceTimeout = setTimeout(playAlarmSequence, toneMs + 700);
+    }, kettleMs + 150);
+  } catch (e) {}
+}
+function startAlarmLoop() { playAlarmSequence(); }
+function stopAlarmLoop() {
+  if (alarmSequenceTimeout) { clearTimeout(alarmSequenceTimeout); alarmSequenceTimeout = null; }
+}
+
+function fireLocalNotification() {
+  try {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification("Decimal Tea — Tea's Ready", { body: 'Your steep is complete', tag: 'decimal-tea' });
+    }
+  } catch (e) {}
+}
+function requestNotifyPermission() {
+  try {
+    if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+  } catch (e) {}
+}
+function requestPersistentStorage() {
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+}
+
+// ══════════════════════════════════════════════════════
+//  SCREEN WAKE — Wake Lock API plus a canvas-stream video
+//  fallback for browsers that don't support it yet.
+// ══════════════════════════════════════════════════════
+let wakeLock = null;
+let noSleepVideo = null;
+
+function initNoSleepFallback() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1; canvas.height = 1;
+    const cctx = canvas.getContext('2d');
+    cctx.fillRect(0, 0, 1, 1);
+    const stream = canvas.captureStream(1);
+    const video = document.createElement('video');
+    video.setAttribute('playsinline', '');
+    video.muted = true;
+    video.srcObject = stream;
+    noSleepVideo = video;
+  } catch (e) { noSleepVideo = null; }
+}
+initNoSleepFallback();
+
+async function requestWakeLockReal() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    }
+  } catch (e) { wakeLock = null; }
+}
+async function releaseWakeLockReal() {
+  try { if (wakeLock) { await wakeLock.release(); wakeLock = null; } } catch (e) {}
+}
+const keepAliveAudio = document.getElementById('keep-alive-audio');
+function startBackgroundAudioSession() {
+  try { if (keepAliveAudio) { keepAliveAudio.volume = 0.01; keepAliveAudio.play().catch(() => {}); } } catch (e) {}
+}
+function stopBackgroundAudioSession() {
+  try { if (keepAliveAudio) keepAliveAudio.pause(); } catch (e) {}
+}
+
+function keepScreenAwake() {
+  requestWakeLockReal();
+  if (noSleepVideo) noSleepVideo.play().catch(() => {});
+  startBackgroundAudioSession();
+}
+function allowScreenSleep() {
+  releaseWakeLockReal();
+  if (noSleepVideo) noSleepVideo.pause();
+  stopBackgroundAudioSession();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && timerRunning) keepScreenAwake();
+});
+
+// ══════════════════════════════════════════════════════
+//  PRESET TOGGLE
+// ══════════════════════════════════════════════════════
+function togglePresets() {
+  const checked = document.getElementById('preset-toggle').checked;
+  playSwitchSound(checked);
+  document.getElementById('tea-card').classList.toggle('hidden', !checked);
+}
+
+// ══════════════════════════════════════════════════════
+//  DIAL (slide wheel) — drag around a 300° arc to set the
+//  steep duration in decimal minutes:seconds.
+// ══════════════════════════════════════════════════════
+const dialSvg = document.getElementById('dial-svg');
+let currentDs = 140;
+let dragging = false;
+
+function polarPoint(cx, cy, r, angleDeg) {
+  const rad = angleDeg * Math.PI / 180;
+  return { x: cx + r * Math.sin(rad), y: cy - r * Math.cos(rad) };
+}
+function describeArc(cx, cy, r, startAngle, endAngle) {
+  const startPt = polarPoint(cx, cy, r, startAngle);
+  const endPt = polarPoint(cx, cy, r, endAngle);
+  const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+  return `M ${startPt.x} ${startPt.y} A ${r} ${r} 0 ${largeArc} 1 ${endPt.x} ${endPt.y}`;
+}
+document.getElementById('dial-track').setAttribute('d', describeArc(130, 130, 110, -150, 150));
+
+function angleForDs(ds) { return (ds / MAX_DS) * 300 - 150; }
+
+function setDialValue(ds) {
+  ds = Math.max(0, Math.min(MAX_DS, Math.round(ds)));
+  currentDs = ds;
+  const angle = angleForDs(ds);
+  document.getElementById('dial-progress').setAttribute('d', describeArc(130, 130, 110, -150, angle));
+  const pt = polarPoint(130, 130, 110, angle);
+  const handle = document.getElementById('dial-handle');
+  handle.setAttribute('cx', pt.x);
+  handle.setAttribute('cy', pt.y);
+  document.getElementById('dial-time').textContent = formatDs(ds);
+}
+
+function setDialColor(color) {
+  document.getElementById('dial-progress').style.stroke = color;
+}
+
+function clearTeaSelectionHighlight() {
+  selectedTeaId = null;
+  document.querySelectorAll('.tea-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.style.background = ''; b.style.borderColor = '';
+  });
+  document.getElementById('tea-note').textContent = 'Custom steep time — drag the dial or use the ± buttons.';
+  setDialColor('var(--red)');
+}
+
+function nudgeDial(delta) {
+  if (timerRunning) return;
+  setDialValue(currentDs + delta);
+  clearTeaSelectionHighlight();
+}
+
+// ── iPod click-wheel feel: a light tick sound (+ vibration where the
+//    device supports it) each time the drag crosses a detent. Apple's
+//    WebKit does not expose the Vibration API on iOS, so on iPhone this
+//    will be audio-only — the tick sound still plays there.
+let wheelNoiseBuffer = null;
+function getWheelNoiseBuffer(ctx) {
+  if (!wheelNoiseBuffer) {
+    const len = Math.floor(ctx.sampleRate * 0.014);
+    wheelNoiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = wheelNoiseBuffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+  }
+  return wheelNoiseBuffer;
+}
+function playWheelTick() {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+
+    const src = ctx.createBufferSource();
+    src.buffer = getWheelNoiseBuffer(ctx);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 4800;
+    filter.Q.value = 1.1;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.22, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.022);
+    src.connect(filter).connect(gain).connect(ctx.destination);
+    src.start(now);
+    src.stop(now + 0.025);
+
+    // A touch of low body underneath the click so it reads as louder/firmer
+    const thock = ctx.createOscillator();
+    const thockGain = ctx.createGain();
+    thock.type = 'sine';
+    thock.frequency.setValueAtTime(220, now);
+    thock.frequency.exponentialRampToValueAtTime(140, now + 0.02);
+    thockGain.gain.setValueAtTime(0.07, now);
+    thockGain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+    thock.connect(thockGain).connect(ctx.destination);
+    thock.start(now);
+    thock.stop(now + 0.03);
+  } catch (e) {}
+}
+function triggerWheelHaptic() {
+  try { if (navigator.vibrate) navigator.vibrate(4); } catch (e) {}
+}
+
+function updateFromPointer(e) {
+  const rect = dialSvg.getBoundingClientRect();
+  const scaleX = 260 / rect.width, scaleY = 260 / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+  const dx = x - 130, dy = y - 130;
+  let angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+  if (angle > 150) angle = 150;
+  if (angle < -150) angle = -150;
+  const fraction = (angle + 150) / 300;
+  let value = fraction * MAX_DS;
+  value = Math.round(value / 5) * 5;
+  if (value !== currentDs) {
+    playWheelTick();
+    triggerWheelHaptic();
+  }
+  setDialValue(value);
+  clearTeaSelectionHighlight();
+}
+function onDragMove(e) { if (dragging) { e.preventDefault(); updateFromPointer(e); } }
+function endDrag() {
+  dragging = false;
+  document.body.style.overflow = '';
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', endDrag);
+}
+dialSvg.addEventListener('pointerdown', (e) => {
+  if (timerRunning) return;
+  dragging = true;
+  e.preventDefault();
+  // Lock page scroll for the duration of the drag so the layout can't
+  // shift or the browser rubber-band-scroll while the wheel is in use.
+  document.body.style.overflow = 'hidden';
+  updateFromPointer(e);
+  document.addEventListener('pointermove', onDragMove, { passive: false });
+  document.addEventListener('pointerup', endDrag);
+}, { passive: false });
+
+// ══════════════════════════════════════════════════════
+//  TEA TYPE SELECTION
+// ══════════════════════════════════════════════════════
+let selectedTeaId = null;
+
+function selectTea(id, btn) {
+  selectedTeaId = id;
+  const preset = TEA_PRESETS[id];
+  document.querySelectorAll('.tea-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.style.background = ''; b.style.borderColor = '';
+  });
+  btn.classList.add('selected');
+  btn.style.background = preset.color;
+  btn.style.borderColor = preset.color;
+  setDialValue(preset.default);
+  setDialColor(preset.color);
+  document.getElementById('tea-note').textContent =
+    `${preset.name} — suggested ${dsRangeLabel(preset)} decimal (${preset.std} standard)`;
+}
+
+let brewTeaId = null;
+
+// ══════════════════════════════════════════════════════
+//  TIMER ENGINE
+// ══════════════════════════════════════════════════════
+let timerRunning = false;
+let timerTotalMs = 0;
+let timerRemaining = 0;
+let timerStartTime = 0;
+let timerRAF = null;
+const CUP_RING_CIRC = 2 * Math.PI * 90;
+
+function startTimer() {
+  if (currentDs <= 0) return;
+  const totalMs = currentDs * 864;
+
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  requestPersistentStorage();
+  requestNotifyPermission();
+  keepScreenAwake();
+
+  brewTeaId = selectedTeaId;
+  timerTotalMs = totalMs;
+  timerRemaining = totalMs;
+  timerStartTime = Date.now();
+  timerRunning = true;
+
+  const ringColor = brewTeaId ? TEA_PRESETS[brewTeaId].color : 'var(--red)';
+  document.getElementById('cup-ring-progress').style.stroke = ringColor;
+  document.getElementById('timer-readout').style.color = ringColor;
+
+  saveState({ totalMs, startTime: timerStartTime, running: true, pausedRemaining: null, finished: false, selectedAlarm, brewTeaId });
+
+  document.getElementById('setup-panel').classList.add('hidden');
+  document.getElementById('timer-panel').classList.remove('hidden');
+  document.getElementById('pause-btn').textContent = 'Pause';
+  renderTimer();
+  timerRAF = requestAnimationFrame(timerTick);
+}
+
+function timerTick() {
+  if (!timerRunning) return;
+  timerRemaining = Math.max(0, timerTotalMs - (Date.now() - timerStartTime));
+  renderTimer();
+  if (timerRemaining <= 0) { timerFinished(); return; }
+  timerRAF = requestAnimationFrame(timerTick);
+}
+
+function renderTimer() {
+  const dsRemaining = timerRemaining / 864;
+  const m = Math.floor(dsRemaining / 100);
+  const s = Math.floor(dsRemaining % 100);
+  document.getElementById('timer-readout').textContent = `${m}:${String(s).padStart(2, '0')}`;
+
+  const fractionRemaining = timerTotalMs > 0 ? timerRemaining / timerTotalMs : 0;
+  const ring = document.getElementById('cup-ring-progress');
+  ring.style.strokeDasharray = `${CUP_RING_CIRC}`;
+  ring.style.strokeDashoffset = `${CUP_RING_CIRC * (1 - fractionRemaining)}`;
+}
+
+function timerFinished() {
+  timerRunning = false;
+  cancelAnimationFrame(timerRAF);
+  allowScreenSleep();
+  renderTimer();
+  document.getElementById('alarm-overlay').classList.add('active');
+  saveState({ totalMs: timerTotalMs, startTime: timerStartTime, running: false, pausedRemaining: 0, finished: true, selectedAlarm, brewTeaId });
+  try { if (navigator.vibrate) navigator.vibrate([40, 60, 40]); } catch (e) {}
+  startAlarmLoop();
+}
+
+function pauseResume() {
+  const btn = document.getElementById('pause-btn');
+  if (timerRunning) {
+    timerRunning = false;
+    cancelAnimationFrame(timerRAF);
+    allowScreenSleep();
+    timerRemaining = Math.max(0, timerTotalMs - (Date.now() - timerStartTime));
+    btn.textContent = 'Resume';
+    saveState({ totalMs: timerTotalMs, startTime: timerStartTime, running: false, pausedRemaining: timerRemaining, finished: false, selectedAlarm, brewTeaId });
+  } else {
+    timerStartTime = Date.now() - (timerTotalMs - timerRemaining);
+    timerRunning = true;
+    keepScreenAwake();
+    btn.textContent = 'Pause';
+    saveState({ totalMs: timerTotalMs, startTime: timerStartTime, running: true, pausedRemaining: null, finished: false, selectedAlarm, brewTeaId });
+    timerRAF = requestAnimationFrame(timerTick);
+  }
+}
+
+function resetTimer() {
+  timerRunning = false;
+  cancelAnimationFrame(timerRAF);
+  allowScreenSleep();
+  stopAlarmLoop();
+  clearState();
+  document.getElementById('alarm-overlay').classList.remove('active');
+  document.getElementById('timer-panel').classList.add('hidden');
+  document.getElementById('setup-panel').classList.remove('hidden');
+  timerRemaining = 0; timerTotalMs = 0;
+}
+
+function dismissAlarm() {
+  allowScreenSleep();
+  stopAlarmLoop();
+  clearState();
+  document.getElementById('alarm-overlay').classList.remove('active');
+  document.getElementById('timer-panel').classList.add('hidden');
+  document.getElementById('setup-panel').classList.remove('hidden');
+}
+
+// ══════════════════════════════════════════════════════
+//  STATE PERSISTENCE — survives app close/reopen since it
+//  is reconstructed from the stored end-time.
+// ══════════════════════════════════════════════════════
+const STORAGE_KEY = 'decimalTeaState';
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function loadState() {
+  try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+function clearState() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+}
+
+function restoreState() {
+  const st = loadState();
+  if (!st) return;
+
+  selectedAlarm = st.selectedAlarm || 0;
+  document.querySelectorAll('.alarm-btn').forEach((b, i) => b.classList.toggle('selected', i === selectedAlarm));
+  brewTeaId = st.brewTeaId || null;
+
+  const showBrewing = () => {
+    document.getElementById('setup-panel').classList.add('hidden');
+    document.getElementById('timer-panel').classList.remove('hidden');
+    const ringColor = brewTeaId ? TEA_PRESETS[brewTeaId].color : 'var(--red)';
+    document.getElementById('cup-ring-progress').style.stroke = ringColor;
+    document.getElementById('timer-readout').style.color = ringColor;
+  };
+
+  if (st.finished) {
+    timerTotalMs = st.totalMs; timerRemaining = 0; timerRunning = false;
+    showBrewing();
+    renderTimer();
+    document.getElementById('alarm-overlay').classList.add('active');
+    startAlarmLoop();
+    return;
+  }
+
+  const elapsed = Date.now() - st.startTime;
+  const remaining = st.running ? Math.max(0, st.totalMs - elapsed) : st.pausedRemaining;
+
+  if (st.running && remaining <= 0) {
+    timerTotalMs = st.totalMs; timerRemaining = 0; timerRunning = false;
+    showBrewing();
+    renderTimer();
+    document.getElementById('alarm-overlay').classList.add('active');
+    saveState({ ...st, finished: true, running: false });
+    startAlarmLoop();
+    return;
+  }
+
+  timerTotalMs = st.totalMs;
+  timerRemaining = remaining;
+  timerRunning = st.running;
+  timerStartTime = Date.now() - (st.totalMs - remaining);
+
+  showBrewing();
+  document.getElementById('pause-btn').textContent = timerRunning ? 'Pause' : 'Resume';
+  renderTimer();
+  if (timerRunning) { timerRAF = requestAnimationFrame(timerTick); keepScreenAwake(); }
+}
+
+// ── Initial state ──
+setDialValue(currentDs);
+restoreState();
+</script>
+</body>
+</html>
